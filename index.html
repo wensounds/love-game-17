@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>17 Months With Miamor 💝</title>
+
+<style>
+body {
+  margin:0;
+  background:#141625;
+  color:white;
+  font-family:'Segoe UI',sans-serif;
+  text-align:center;
+}
+
+.screen {
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  animation:fadeIn 1s ease;
+}
+
+button {
+  padding:14px 28px;
+  margin:10px;
+  border:none;
+  border-radius:14px;
+  background:#7c7cff;
+  color:white;
+  font-size:16px;
+  cursor:pointer;
+  transition:.2s;
+}
+button:hover {transform:scale(1.05);}
+
+.big-question {
+  font-size:28px;
+  font-weight:600;
+}
+.subtitle {
+  font-size:14px;
+  opacity:.7;
+}
+
+#progress {
+  position:fixed;
+  top:0;
+  left:0;
+  height:6px;
+  background:#ff7cfb;
+  width:0%;
+  transition:0.4s;
+}
+
+/* ===== MUSEO ===== */
+.museum {
+  background:#111;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+}
+
+.gallery {
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+}
+
+.frame {
+  display:inline-block;
+  padding:12px;
+  border:14px solid #d4af37;
+  background:black;
+  margin:15px;
+  box-shadow:0 0 20px rgba(212,175,55,0.8);
+}
+.frame img {
+  width:200px;
+  border-radius:4px;
+}
+
+/* ===== CARTA ===== */
+.letter {
+  background:#1e1f29;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:40px;
+  max-width:900px;
+  margin:auto;
+  font-size:18px;
+  line-height:1.6;
+  text-align:center;
+}
+
+@keyframes fadeIn {
+  from {opacity:0; transform:translateY(10px);}
+  to {opacity:1; transform:translateY(0);}
+}
+
+audio {display:none;}
+</style>
+</head>
+
+<body>
+
+<div id="progress"></div>
+<audio id="music" src="oursong.mp3" loop></audio>
+
+<div id="app" class="screen"></div>
+
+<script>
+const app = document.getElementById("app");
+const music = document.getElementById("music");
+const progress = document.getElementById("progress");
+
+const startDate = new Date("2024-09-05");
+let photosUnlocked = [];
+let loveProgress = 0;
+
+/* ===== FOTOS ===== */
+const photos = [
+ {src:"foto1.jpg", caption:"Nuestro aniversario en el Airbnb 💝"},
+ {src:"foto2.jpg", caption:"Una foto que siempre me hace sonreír"},
+ {src:"foto3.jpg", caption:"Nosotros siendo nosotros"},
+ {src:"foto4.jpg", caption:"Un recuerdo que guardo con cariño"},
+ {src:"foto5.jpg", caption:"Mi persona favorita"},
+ {src:"foto6.jpg", caption:"Nuestra historia en una imagen"}
+];
+
+/* ===== PREGUNTAS FILTRO ===== */
+const filterQuestions = [
+ {q:"¿Dónde nos conocimos?", a:"Trabajo"},
+ {q:"¿Qué se celebra el 5 de setiembre?", a:"Nuestro aniversario"},
+ {q:"¿Nuestra fecha especial? (DD/MM/AAAA)", a:"05/09/2024"}
+];
+
+/* ===== THIS OR THAT ===== */
+const thisOrThat = [
+ ["Recuerdo perfecto","Olvidar cosas"],
+ ["Hablar todos los idiomas","Ser experto en instrumentos"],
+ ["Autor famoso","Músico famoso"],
+ ["Memoria fotográfica","Ver el futuro en sueños"],
+ ["Ser amado por quien eres","Ser admirado por lo que haces"],
+ ["Isla desierta","Gran ciudad"]
+];
+
+let fIndex=0;
+let tIndex=0;
+
+/* ===== HOME ===== */
+function home(){
+ app.innerHTML=`
+ <div class="subtitle">💝 17 meses contigo</div>
+ <div class="big-question">Hola Miamor</div>
+ <button onclick="startGame()">Empezar Juego</button>
+ <button onclick="wrongClose()">Cerrar</button>
+ `;
+}
+
+function wrongClose(){
+ alert("Opción incorrecta. El destino es empezar el juego 💝");
+}
+
+/* ===== START ===== */
+function startGame(){
+ music.volume=0;
+ music.play();
+ let v=0;
+ let fade=setInterval(()=>{
+   v+=0.03;
+   music.volume=v;
+   if(v>=1) clearInterval(fade);
+ },200);
+ fIndex=0;
+ askFilter();
+}
+
+/* ===== FILTRO ===== */
+function askFilter(){
+ let q=filterQuestions[fIndex];
+ app.innerHTML=`
+ <div class="subtitle">🔐 Verificando destinatario</div>
+ <div class="big-question">${q.q}</div>
+ <input id="ans" style="padding:10px;border-radius:10px;border:none;">
+ <button onclick="checkFilter()">Enviar</button>
+ `;
+}
+
+function checkFilter(){
+ let input=document.getElementById("ans").value.toLowerCase();
+ if(input.includes(filterQuestions[fIndex].a.toLowerCase())){
+   fIndex++;
+   if(fIndex<filterQuestions.length) askFilter();
+   else rules();
+ } else {
+   alert("Respuesta incorrecta, intenta otra vez 😌");
+ }
+}
+
+/* ===== RULES ===== */
+function rules(){
+ app.innerHTML=`
+ <div class="big-question">🎮 This or That</div>
+ <div class="subtitle">Midiendo nuestra compatibilidad</div>
+ <button onclick="askThisOrThat()">Continuar</button>
+ `;
+}
+
+/* ===== THIS OR THAT ===== */
+function askThisOrThat(){
+ let q=thisOrThat[tIndex];
+ app.innerHTML=`
+ <div class="big-question">${q[0]} o ${q[1]}?</div>
+ <button onclick="choose()">${q[0]}</button>
+ <button onclick="choose()">${q[1]}</button>
+ `;
+}
+
+function choose(){
+ unlockPhoto();
+ tIndex++;
+ if(tIndex<thisOrThat.length) askThisOrThat();
+ else finish();
+}
+
+/* ===== CONTADOR ===== */
+function finish(){
+ let today=new Date();
+ let days=Math.floor((today-startDate)/(1000*60*60*24));
+ app.innerHTML=`
+ <div class="big-question">Hemos estado juntos ${days} días 💝</div>
+ <div class="subtitle">Love Progress 17 / ∞</div>
+ <button onclick="openMuseum()">Modo Secreto</button>
+ <button onclick="openLetter()">Carta Digital</button>
+ `;
+}
+
+/* ===== MUSEO ===== */
+function openMuseum(){
+ let html=`<div class="museum"><h2>El mural de nosotros</h2><div class="gallery">`;
+ photosUnlocked.forEach(p=>{
+   html+=`<div class="frame"><img src="${p.src}"><p>${p.caption}</p></div>`;
+ });
+ html+=`</div>
+ <button onclick="openLetter()">Leer Carta</button>
+ <button onclick="home()">Inicio</button></div>`;
+ app.innerHTML=html;
+}
+
+/* ===== CARTA ===== */
+const letterText = `
+<h1>Mi amor,</h1>
+
+<p>Cuando pienso en nosotros, me doy cuenta de cuánto hemos vivido y de todo lo que hemos construido sin darnos cuenta. A veces miro atrás y me sorprende ver cómo crecimos juntos, cómo cambiamos, cómo aprendimos a entendernos y a querernos mejor con el tiempo. Cada recuerdo contigo es una parte de mi historia que no cambiaría por nada, porque incluso los momentos difíciles nos hicieron más fuertes.</p>
+
+<p>Gracias por tu paciencia cuando soy complicada, por tu calma cuando yo me desbordo, y por tu cariño incluso cuando no sé cómo expresarme. Gracias por quedarte, por escucharme, por abrazarme cuando lo necesito y por hacerme sentir que no estoy sola. Contigo aprendí que el amor no es solo palabras bonitas, sino presencia, respeto, apoyo y decisiones diarias.</p>
+
+<p>Me siento muy afortunada de tenerte en mi vida, de poder llamarte mi novio y de saber que puedo contar contigo. Me gusta pensar en el futuro contigo, en los sueños que aún no hemos cumplido, en los viajes, en las conversaciones largas, en las risas espontáneas y en la tranquilidad de saber que estamos juntos. Quiero seguir sumando recuerdos, planes, aprendizajes y momentos simples pero importantes a tu lado.</p>
+
+<p>Gracias por ser quien eres conmigo, por cuidarme a tu manera y por dejarme ser yo sin miedo. Te quiero, te admiro y valoro mucho lo que tenemos. Y aunque a veces no lo diga con todas las palabras que merece, quiero que sepas que ocupas un lugar muy especial en mi corazón.</p>
+
+<p><b>Por responder todo bien, acabas de desbloquear una vida entera juntos 💝</b></p>
+`;
+
+function openLetter(){
+ app.innerHTML=`<div class="letter">${letterText}
+ <button onclick="openMuseum()">Ver Mural</button>
+ <button onclick="home()">Inicio</button></div>`;
+}
+
+/* ===== FOTO + LOGRO ===== */
+function unlockPhoto(){
+ let p=photos[photosUnlocked.length];
+ if(p){
+   photosUnlocked.push(p);
+   loveProgress += 100/6;
+   progress.style.width = loveProgress+"%";
+   alert(`💝 Achievement unlocked: Girlfriend Memory Cache v1.0\nFoto #${photosUnlocked.length} añadida`);
+ }
+}
+
+home();
+</script>
+
+</body>
+</html>
